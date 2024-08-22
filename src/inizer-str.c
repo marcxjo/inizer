@@ -17,19 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "inizer-str.h"
-
-#include <math.h>
-#include <stdlib.h>
 #include <string.h>
 
-bool str_is_null_or_empty(const char *value) { return value == NULL || strcmp(value, STR_EMPTY) == 0; }
+#include "inizer-str.h"
 
 bool str_is_equal(const char *value, const char* expected) { return strcmp(value, expected) == 0; }
-
-char *str_new() { return str_new_len(STR_MAX_LENGTH); }
-
-char *str_new_len(const int length) {
-  char *str = malloc(length + 1);
-  return str;
-}

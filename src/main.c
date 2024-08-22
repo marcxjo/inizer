@@ -44,12 +44,6 @@ int main(int argc, char *argv[]) {
 
     verb = argv[1];
 
-    if (str_is_null_or_empty((char *) verb)) {
-        log_error("no command specified");
-        usage(cmd);
-        return 1;
-    }
-
     if (str_is_equal(verb, "get")) {
         if (argc < 5) {
             log_error("no key specified");

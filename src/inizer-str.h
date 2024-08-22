@@ -25,12 +25,6 @@
 #define STR_MAX_LENGTH 128
 #define STR_EMPTY ""
 
-bool str_is_null_or_empty(const char *value);
-
 bool str_is_equal(const char *value, const char *expected);
-
-char *str_new();
-
-char *str_new_len(int length);
 
 #endif //INIZER_UTILS_H
