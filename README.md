@@ -6,7 +6,7 @@ inizer (pronounced "/'a͡ɪː.ɛn.a͡ɪˑ.zɚ/" in standard American English, or
 
 ## Usage
 
-inizer currently offers a very simple API:
+inizer currently offers a simple command-line interface for reading and writing configuration values. It can be used directly without too much difficulty, but it is designed with use as a scripting API in mind (e.g., to be wrapped for handling app- or domain-specific configurations in shell scripts).
 
 ```shell
     ionizer get FILE_PATH SECTION_NAME KEY_NAME 
