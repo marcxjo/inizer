@@ -23,14 +23,16 @@
 
 #include "inizer-api.h"
 
+#include "inizer-logging.h"
+#include "inizer-str.h"
+
 static GKeyFile *parse_keyfile(const char *file_path) {
     GKeyFile *key_file = g_key_file_new();
     GError *error = NULL;
 
-    gboolean file_opened = g_key_file_load_from_file(key_file, file_path, G_KEY_FILE_NONE, &error);
-
-    if (!file_opened) {
-        fprintf(stderr, "Failed to load config file at %s\n", file_path);
+    if (!g_key_file_load_from_file(key_file, file_path, G_KEY_FILE_NONE, &error)) {
+        log_warn(g_strdup_printf("Error loading config file: %s", error->message));
+        g_error_free(error);
     }
 
     return key_file;
@@ -41,9 +43,10 @@ static const char *read_config_value(GKeyFile *config_data, const char *config_s
 
     const char *config_value = g_key_file_get_string(config_data, config_section, key, &error);
 
-    if (error != NULL) {
-        fprintf(stderr, "Failed to read config file at %s\n", config_section);
-        return "";
+    if (error) {
+        log_warn(g_strdup_printf("Error reading config value: %s", config_section, key, error->message));
+        g_error_free(error);
+        return STR_EMPTY;
     }
 
     return strdup(config_value);
@@ -52,10 +55,9 @@ static const char *read_config_value(GKeyFile *config_data, const char *config_s
 static int save_config_file(GKeyFile *key_file, const char *file_path) {
     GError *error = NULL;
 
-    g_key_file_save_to_file(key_file, file_path, &error);
-
-    if (error != NULL) {
-        fprintf(stderr, "Failed to save config file at %s\n", file_path);
+    if (!g_key_file_save_to_file(key_file, file_path, &error)) {
+        log_warn(g_strdup_printf("Error saving config file: %s", error->message));
+        g_error_free(error);
         return 1;
     }
 
