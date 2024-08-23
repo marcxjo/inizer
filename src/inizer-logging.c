@@ -18,25 +18,20 @@
  */
 
 #include <stdio.h>
+#include <glib.h>
 
 #include "inizer-common.h"
 
-#ifndef NDEBUG
-    #define LOG(lvl, msg) \
-        { printf("%s-%-6s %s:%d: %s\n", COMMAND_NAME, lvl, __FILE_NAME__, __LINE__, msg); }
+#ifndef NDEBUG // Then no-op all logs
+               // This will probably eventually be refactored to consume a config setting
+    #define INFO(msg) {}
+    #define WARN(msg) {}
+    #define ERROR(msg) {}
 #else
-    #define LOG(lvl, msg) \
-        { printf("%s-%-6s %s\n", COMMAND_NAME, lvl, msg); }
+    #define INFO(msg) { g_info(msg); }
+    #define WARN(msg) { g_warning(msg); }
+    #define ERROR(msg) { g_critical(msg); }
 #endif
-
-#define INFO(msg) \
-    { LOG("INFO:", msg); }
-
-#define WARN(msg) \
-    { LOG("WARN:", msg); }
-
-#define ERROR(msg) \
-    { LOG("ERROR:", msg); }
 
 void log_info(const char *msg) { INFO(msg); }
 void log_warn(const char *msg) { WARN(msg); }
