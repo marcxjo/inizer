@@ -20,6 +20,7 @@
 #ifndef INIZER_COMMON_H
 #define INIZER_COMMON_H
 
+// TODO: refactor to be set at compile time
 #define COMMAND_NAME "inizer"
 
 #endif //INIZER_COMMON_H

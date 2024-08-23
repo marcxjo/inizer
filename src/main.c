@@ -26,7 +26,7 @@
 #include "inizer-logging.h"
 #include "inizer-str.h"
 
-void usage(const char *cmd_name) {
+void usage() {
     printf("Usage:\n"
            "    %1$s get FILE_PATH CONFIG_SECTION KEY\n"
            "    %1$s set FILE_PATH CONFIG_SECTION KEY VALUE\n",
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     g_set_prgname(cmd);
 
     if (argc < 2) {
-        usage(cmd);
+        usage();
         return 1;
     }
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     if (str_is_equal(verb, "get")) {
         if (argc < 5) {
             log_error("no key specified");
-            usage(cmd);
+            usage();
             return 1;
         }
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     if (str_is_equal(verb, "set")) {
         if (argc < 6) {
             log_error("no value specified");
-            usage(cmd);
+            usage();
             return 1;
         }
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
 
         if (write_status != 0) {
             printf("failed to write config section key value\n");
-            usage(cmd);
+            usage();
             return 1;
         }
 
