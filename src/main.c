@@ -19,6 +19,7 @@
 
 #include <libgen.h>
 #include <stdio.h>
+#include <glib.h>
 
 #include "inizer-api.h"
 #include "inizer-common.h"
@@ -36,6 +37,8 @@ void usage(const char *cmd_name) {
 int main(int argc, char *argv[]) {
     const char *verb, *file_path, *config_section, *key, *value;
     const char *cmd = basename(argv[0]);
+    // Enable logs to display the program name in logs
+    g_set_prgname(cmd);
 
     if (argc < 2) {
         usage(cmd);
