@@ -24,4 +24,6 @@ const char *inizer_get_value(const char *file_path, const char *section_name, co
 
 int inizer_set_value(const char *file_path, const char *section_name, const char *key, const char *value);
 
+int inizer_unset_value(const char *file_path, const char *section_name, const char *key);
+
 #endif // INIZER_API_H

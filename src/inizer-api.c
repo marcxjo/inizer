@@ -26,6 +26,8 @@
 #include "inizer-logging.h"
 #include "inizer-str.h"
 
+//region Utility functions
+
 static GKeyFile *parse_keyfile(const char *file_path) {
     GKeyFile *key_file = g_key_file_new();
     GError *error = NULL;
@@ -36,6 +38,20 @@ static GKeyFile *parse_keyfile(const char *file_path) {
     }
 
     return key_file;
+}
+
+static int count_keys_in_config_section(GKeyFile *config_data, const gchar *config_section) {
+    GError *error = NULL;
+    gsize key_count = -1;
+
+    g_key_file_get_keys(config_data, config_section, &key_count, &error);
+
+    if (error) {
+        log_error(g_strdup_printf("Error reading config section: %s", error->message));
+        g_error_free(error);
+    }
+
+    return key_count;
 }
 
 static const char *read_config_value(GKeyFile *config_data, const char *config_section, const char *key) {
@@ -64,6 +80,34 @@ static int save_config_file(GKeyFile *key_file, const char *file_path) {
     return 0;
 }
 
+static int delete_config_section(GKeyFile *config_data, const char *config_section) {
+    GError *error = NULL;
+
+    if (!g_key_file_remove_group(config_data, config_section, &error)) {
+        log_warn(g_strdup_printf("Error deleting config section: %s", error->message));
+        g_error_free(error);
+        return 1;
+    }
+
+    return 0;
+}
+
+static int delete_config_value(GKeyFile *config_data, const char *config_section, const char *key) {
+    GError *error = NULL;
+
+    if (!g_key_file_remove_key(config_data, config_section, key, &error)) {
+        log_warn(g_strdup_printf("Error deleting config value: %s", config_section, error->message));
+        g_error_free(error);
+        return 1;
+    }
+
+    return 0;
+}
+
+//endregion
+
+//region Utility functions
+
 const char *inizer_get_value(const char *file_path, const char *section_name, const char *key) {
     GKeyFile *config_data = parse_keyfile(file_path);
 
@@ -79,9 +123,44 @@ int inizer_set_value(const char *file_path, const char *section_name, const char
 
     g_key_file_set_value(config_data, section_name, key, value);
 
-    int file_save_status = save_config_file(config_data, file_path);
+    const int file_save_status = save_config_file(config_data, file_path);
 
     g_key_file_free(config_data);
 
     return file_save_status;
 }
+
+int inizer_unset_value(const char *file_path, const char *section_name, const char *key) {
+    GKeyFile *config_data = parse_keyfile(file_path);
+
+    const int delete_value_status = delete_config_value(config_data, section_name, key);
+
+    if (delete_value_status != 0) {
+        g_key_file_free(config_data);
+        return delete_value_status;
+    }
+
+    const int remaining_section_key_count = count_keys_in_config_section(config_data, (gchar *) section_name);
+
+    // Don't delete the config section if it still houses other keys
+    if (remaining_section_key_count > 0) {
+        goto save_file;
+    }
+
+    const int delete_section_status = delete_config_section(config_data, section_name);
+
+    if (delete_section_status != 0) {
+        g_key_file_free(config_data);
+        return delete_section_status;
+    }
+
+save_file:
+
+    const int file_save_status = save_config_file(config_data, file_path);
+
+    g_key_file_free(config_data);
+
+    return file_save_status;
+}
+
+//endregion
