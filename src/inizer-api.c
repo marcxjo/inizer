@@ -44,7 +44,7 @@ static const char *read_config_value(GKeyFile *config_data, const char *config_s
     const char *config_value = g_key_file_get_string(config_data, config_section, key, &error);
 
     if (error) {
-        log_warn(g_strdup_printf("Error reading config value: %s", config_section, key, error->message));
+        log_warn(g_strdup_printf("Error reading config value: %s", error->message));
         g_error_free(error);
         return STR_EMPTY;
     }
