@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
         key = argv[4];
         value = argv[5];
 
-        int write_status = inizer_set_value(file_path, config_section, key, value);
+        const int write_status = inizer_set_value(file_path, config_section, key, value);
 
         if (write_status != 0) {
             printf("failed to write config section key value\n");
