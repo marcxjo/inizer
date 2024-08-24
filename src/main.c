@@ -87,5 +87,22 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    return 0;
+    if (str_is_equal(verb, "unset")) {
+        if (argc < 5) {
+            log_error("no key specified");
+            usage();
+            return 1;
+        }
+
+        file_path = argv[2];
+        config_section = argv[3];
+        key = argv[4];
+
+        const int delete_status = inizer_unset_value(file_path, config_section, key);
+
+        return delete_status;
+    }
+
+    usage();
+    return 1;
 }
